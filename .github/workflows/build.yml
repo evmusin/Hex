@@ -1,0 +1,32 @@
+name: Build Hex (with punctuation)
+
+on:
+  workflow_dispatch:   # ручной запуск кнопкой в вебе
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Hex.app
+        run: |
+          xcodebuild \
+            -project Hex.xcodeproj \
+            -scheme Hex \
+            -configuration Release \
+            -derivedDataPath ./build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+
+      - name: Zip the app
+        run: |
+          cd build/Build/Products/Release
+          zip -r Hex-punctuation.zip Hex.app
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hex-punctuation
+          path: build/Build/Products/Release/Hex-punctuation.zip

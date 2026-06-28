@@ -536,7 +536,8 @@ private extension TranscriptionFeature {
       FileManager.default.removeItemIfExists(at: audioURL)
     }
 
-    await pasteboard.paste(result)
+    let cleaned = await PunctuationService.shared.process(result)
+    await pasteboard.paste(cleaned)
     soundEffect.play(.pasteTranscript)
   }
 }
